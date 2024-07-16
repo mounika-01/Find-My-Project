@@ -50,7 +50,9 @@ public class Project {
         return budget;
     }
 
-   public void setBudget(double budget) { this.budget = budget; }
+    public void setBudget(double budget) { 
+        this.budget = budget; 
+    }
 
 
     public List<Researcher> getResearchers() {
