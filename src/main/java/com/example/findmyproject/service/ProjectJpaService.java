@@ -4,7 +4,7 @@ import com.example.findmyproject.model.Project;
 import com.example.findmyproject.model.Researcher;
 import com.example.findmyproject.repository.ProjectJpaRepository;
 import com.example.findmyproject.repository.ProjectRepository;
-import com.example.findmyproject.repository.ResearcherJpaRepository;
+import com.example.findmyproject.repository.ResearchJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class ProjectJpaService implements ProjectRepository {
     public Project addProject(Project project) {
         List<Integer> researchIds = new ArrayList<>();
         for (Researcher research : project.getResearchers()) {
-            reserachIds.add(research.getResearcherId());
+            researchIds.add(research.getResearcherId());
         }
 
         List<Researcher> researchers = researchRepository.findAllById(researchIds);
