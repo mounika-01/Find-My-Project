@@ -16,11 +16,13 @@ import java.util.List;
 @Service
 public class ResearcherJpaService implements ResearcherRepository {
 
+
     @Autowired
     private ProjectJpaRepository projectJpaRepository;
 
+
     @Autowired
-    private ResearcherJpaRepository researcherJpaRepository;
+    private ResearcherJpaRepository researcherJpaRepository; //updated
 
     public ArrayList<Researcher> getResearchers() {
         List<Researcher> researcherList = researcherJpaRepository.findAll();
