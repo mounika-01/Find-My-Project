@@ -4,7 +4,7 @@ import com.example.findmyproject.model.Project;
 import com.example.findmyproject.model.Researcher;
 import com.example.findmyproject.repository.ProjectJpaRepository;
 import com.example.findmyproject.repository.ProjectRepository;
-import com.example.findmyproject.repository.ResearchJpaRepository;
+import com.example.findmyproject.repository.ResearcherJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class ProjectJpaService implements ProjectRepository {
     private ProjectJpaRepository projectJpaRepository;
 
     @Autowired
-    private ResearcherJpaRepository researchJpaRepository;
+    private ResearchJpaRepository researchJpaRepository;
 
     @Override
     public ArrayList<Project> getProjects() {
@@ -47,7 +47,7 @@ public class ProjectJpaService implements ProjectRepository {
             researchIds.add(research.getResearcherId());
         }
 
-        List<Researcher> researchers = researchRepository.findAllById(researchIds);
+        List<Researcher> researchers = researchJpaRepository.findAllById(researchIds);
 
         if (researchers.size() != researchIds.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
