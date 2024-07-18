@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ResearcherJpaService implements ResearcherRepository {
@@ -26,13 +24,13 @@ public class ResearcherJpaService implements ResearcherRepository {
 
     public ArrayList<Researcher> getResearchers() {
         List<Researcher> researcherList = researcherJpaRepository.findAll();
-        ArrayList<Researcher> researchers = new ArrayList<>(researcherList);
-        return researchers;
+        return new ArrayList<>(researcherList);
     }
 
     public Researcher getResearcherById(int researcherId) {
         try {
-            Researcher researcher = researcherJpaRepository.findById(researcherId).get();
+            Researcher researcher = researcherJpaRepository.findById(researcherId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
             return researcher;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -57,18 +55,19 @@ public class ResearcherJpaService implements ResearcherRepository {
         return savedResearcher;
     }
 
-    public Researcher updateResearcher (int researcherId, Researcher researcher) {
-        try{
-            Researcher newResearcher = researcherJpaRepository.findById(researcherId).get();
-            if (researcher.getResearcherName()!=null) {
-                newResearcher.setResearcherName (researcher.getResearcherName());
+    public Researcher updateResearcher(int researcherId, Researcher researcher) {
+        try {
+            Researcher newResearcher = researcherJpaRepository.findById(researcherId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            if (researcher.getResearcherName() != null) {
+                newResearcher.setResearcherName(researcher.getResearcherName());
             }
-            if (researcher.getSpecialization()!=null) {
+            if (researcher.getSpecialization() != null) {
                 newResearcher.setSpecialization(researcher.getSpecialization());
             }
-            if(researcher.getProjects() != null){
+            if (researcher.getProjects() != null) {
                 List<Project> projects = newResearcher.getProjects();
-                for (Project project: projects) {
+                for (Project project : projects) {
                     project.getResearchers().remove(newResearcher);
                 }
                 projectJpaRepository.saveAll(projects);
@@ -76,21 +75,23 @@ public class ResearcherJpaService implements ResearcherRepository {
                 for (Project project : researcher.getProjects()) {
                     newProjectIds.add(project.getProjectId());
                 }
-                List<Project> newProjects =  projectJpaRepository.findAllById(newProjectIds);
-                for (Project project: newProjects) {
+                List<Project> newProjects = projectJpaRepository.findAllById(newProjectIds);
+                for (Project project : newProjects) {
                     project.getResearchers().add(newResearcher);
                 }
                 projectJpaRepository.saveAll(newProjects);
-                newResearcher.setProjects (newProjects);
+                newResearcher.setProjects(newProjects);
             }
-        return researcherJpaRepository.save(newResearcher);
-    } catch (Exception e){
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
+            return researcherJpaRepository.save(newResearcher);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    } // Added missing closing brace here
 
     public void deleteResearcher(int researcherId) {
         try {
-            Researcher researcher = researcherJpaRepository.findById(researcherId).get();
+            Researcher researcher = researcherJpaRepository.findById(researcherId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
             List<Project> projects = researcher.getProjects();
             for (Project project : projects) {
@@ -100,19 +101,17 @@ public class ResearcherJpaService implements ResearcherRepository {
 
             researcherJpaRepository.deleteById(researcherId);
         } catch (Exception e) {
-
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-    }
+    } // Removed the redundant ResponseStatusException
 
     public List<Project> getResearcherProjects(int researcherId) {
         try {
-            Researcher researcher = researcherpaRepository.findById(researcherId).get();
+            Researcher researcher = researcherJpaRepository.findById(researcherId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
             return researcher.getProjects();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
-
 }
