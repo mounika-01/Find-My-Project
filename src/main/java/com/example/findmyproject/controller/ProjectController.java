@@ -24,7 +24,7 @@ public class ProjectController {
         return projectJpaService.getProjectById(projectId);
     }
 
-    @PostMapping("/reasearches/projects")
+    @PostMapping("/researchers/projects")
     public Project addProject(@RequestBody Project project) {
         return projectJpaService.addProject(project);
     }
