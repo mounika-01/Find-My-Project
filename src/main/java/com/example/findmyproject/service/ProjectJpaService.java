@@ -21,7 +21,7 @@ public class ProjectJpaService implements ProjectRepository {
     private ProjectJpaRepository projectJpaRepository;
 
     @Autowired
-    private ResearchJpaRepository researchJpaRepository;
+    private ResearcherJpaRepository researcherJpaRepository;
 
     @Override
     public ArrayList<Project> getProjects() {
