@@ -22,7 +22,7 @@ public class ResearcherJpaService implements ResearcherRepository {
 
 
     @Autowired
-    private ResearcherJpaRepository researcherJpaRepository; //updated
+    private ResearcherJpaRepository researchJpaRepository; //updated
 
     public ArrayList<Researcher> getResearchers() {
         List<Researcher> researcherList = researcherJpaRepository.findAll();
