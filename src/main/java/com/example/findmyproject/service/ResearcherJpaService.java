@@ -29,38 +29,43 @@ public class ResearcherJpaService implements ResearcherRepository {
         return new ArrayList<>(researcherList);
     }
 
-    public Researcher getResearcherById(int researcherId) {
+   public Researcher getResearcherById(int researcherId) {
         try {
-            Researcher researcher = researcherJpaRepository.findById(researcherId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Researcher researcher = researcherJpaRepository.findById(researcherId).get();
             return researcher;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
+
     public Researcher addResearcher(Researcher researcher) {
         List<Integer> projectIds = new ArrayList<>();
         for (Project project : researcher.getProjects()) {
             projectIds.add(project.getProjectId());
         }
+
+
         List<Project> projects = projectJpaRepository.findAllById(projectIds);
         researcher.setProjects(projects);
+
 
         for (Project project : projects) {
             project.getResearchers().add(researcher);
         }
 
+
         Researcher savedResearcher = researcherJpaRepository.save(researcher);
         projectJpaRepository.saveAll(projects);
+
 
         return savedResearcher;
     }
 
+
     public Researcher updateResearcher(int researcherId, Researcher researcher) {
         try {
-            Researcher newResearcher = researcherJpaRepository.findById(researcherId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Researcher newResearcher = researcherJpaRepository.findById(researcherId).get();
             if (researcher.getResearcherName() != null) {
                 newResearcher.setResearcherName(researcher.getResearcherName());
             }
@@ -88,29 +93,36 @@ public class ResearcherJpaService implements ResearcherRepository {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-    } // Added missing closing brace here
+    }
+
 
     public void deleteResearcher(int researcherId) {
         try {
-            Researcher researcher = researcherJpaRepository.findById(researcherId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Researcher researcher = researcherJpaRepository.findById(researcherId).get();
+
 
             List<Project> projects = researcher.getProjects();
             for (Project project : projects) {
                 project.getResearchers().remove(researcher);
             }
+
+
             projectJpaRepository.saveAll(projects);
 
+
             researcherJpaRepository.deleteById(researcherId);
+
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-    } // Removed the redundant ResponseStatusException
+        throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+    }
+
 
     public List<Project> getResearcherProjects(int researcherId) {
         try {
-            Researcher researcher = researcherJpaRepository.findById(researcherId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Researcher researcher = researcherJpaRepository.findById(researcherId).get();
             return researcher.getProjects();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
